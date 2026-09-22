@@ -1,0 +1,16 @@
+feature_name,classification,correlation_with_target,audit_rationale,available_at_prediction_time
+observation_level,SAFE,4.7513775937636515e-18,Strictly derived from events <= early observation window p,YES
+early_event_count,SAFE,0.0333728517687394,Strictly derived from events <= early observation window p,YES
+early_size,SAFE,0.042402507058459424,Strictly derived from events <= early observation window p,YES
+early_comm_count,SAFE,0.009037605465015287,Strictly derived from events <= early observation window p,YES
+early_duration,SAFE,-0.008234554751626433,Strictly derived from events <= early observation window p,YES
+early_growth_rate,SAFE,0.06302955288659508,Strictly derived from events <= early observation window p,YES
+early_max_out_degree,SAFE,-0.025676704585405365,Strictly derived from events <= early observation window p,YES
+early_mean_out_degree,SAFE,-0.0840013210549962,Strictly derived from events <= early observation window p,YES
+early_max_betweenness,SAFE,0.011606142957855163,Strictly derived from events <= early observation window p,YES
+early_mean_betweenness,SAFE,-0.07922664323538303,Strictly derived from events <= early observation window p,YES
+early_max_pagerank,SAFE,-0.001998410067044837,Strictly derived from events <= early observation window p,YES
+early_mean_pagerank,SAFE,-0.10919146526750102,Strictly derived from events <= early observation window p,YES
+early_mean_link_score,SAFE,0.011477580685461121,Strictly derived from events <= early observation window p,YES
+early_max_link_score,SAFE,0.02002074921620632,Strictly derived from events <= early observation window p,YES
+early_preferential_attachment_max,SAFE,-0.01690524605886277,Strictly derived from events <= early observation window p,YES

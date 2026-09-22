@@ -1,0 +1,2 @@
+num_extracted_cascades,mean_cascade_size,median_cascade_size,min_cascade_size,max_cascade_size,std_cascade_size,mean_event_count,mean_community_count,mean_propagation_delay
+1000,623.714,624.0,582,671,13.080646287829486,832.085,13.0,2.760856568357445

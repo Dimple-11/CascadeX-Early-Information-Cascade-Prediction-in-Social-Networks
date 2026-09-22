@@ -1,0 +1,2 @@
+num_nodes,num_edges,density,mean_in_degree,max_in_degree,min_in_degree,mean_out_degree,max_out_degree,min_out_degree,mean_total_degree,max_total_degree,min_total_degree,num_weakly_connected_components,largest_wcc_size,wcc_coverage_ratio,num_strongly_connected_components,largest_scc_size,scc_coverage_ratio,reciprocity,clustering_coefficient_transitivity,degree_assortativity
+960,5000,0.00543100451859576,5.208333333333333,22,0,5.208333333333333,94,0,10.416666666666666,109,1,1,960,1.0,246,715,0.7447916666666666,0.0448,0.02037632154999767,-0.08954251582730308

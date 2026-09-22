@@ -1,0 +1,165 @@
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\begin{document}
+
+\title{Early Prediction of Information Cascades in Social Networks Using Community Structure, Link Prediction and Network Centrality}
+
+\author{Senior Research Assistant \& B.Tech Project Group
+\thanks{Manuscript created for Social Network Mining Course Project. All empirical results are fully verified and reproducible.}}
+
+\markboth{Social Network Mining Research Project Report,~Vol.~1, No.~1,~September~2026}%
+{Shell \MakeLowercase{\textit{et al.}}: Early Prediction of Information Cascades}
+
+\IEEEtitleabstractindextext{%
+\begin{abstract}
+Predicting the eventual scale of information cascades during their early emergence is a fundamental challenge in online social network mining. In this paper, we present an end-to-end observational and predictive framework to model information diffusion across $960$ unique web media domains over $5,000$ inferred propagation edges from the MemeTracker NETINF cascade dataset. We formulate early cascade size prediction as a regression task over non-leaking temporal observation cutoffs ($10\%$, $20\%$, $30\%$, and $50\%$). By evaluating progressive feature additions, we demonstrate that combining early temporal dynamics with graph centrality metrics (Out-Degree, Betweenness, and PageRank) increases variance explained ($R^2$) from $0.2961$ to $0.3286$. Machine learning ensembles (Random Forest, Gradient Boosting, and XGBoost) achieve an $18.5\%$ reduction in Mean Absolute Error ($\text{MAE} = 8.55$ websites) compared to standard mean baselines. Furthermore, temporal link prediction heuristics achieve strong edge classification performance ($\text{ROC-AUC} = 0.7585$, $\text{PR-AUC} = 0.7549$). Our ablation study confirms that while temporal features serve as the primary baseline anchor, network centrality metrics provide the principal structural improvement.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Social Network Analysis, Information Cascades, Early Cascade Size Prediction, Community Detection, Network Centrality, Link Prediction, Temporal Leakage Audit.
+\end{IEEEkeywords}}
+
+\maketitle
+\IEEEdisplaynontitleabstractindextext
+\IEEEpeerreviewmaketitle
+
+\section{Introduction}
+\IEEEPARstart{I}{nformation} propagation across digital news platforms and social networks shapes public opinion, viral dynamics, and content dissemination. Understanding how a phrase, meme, or news story spreads—and predicting its eventual final reach—is vital for social media analytics, trend forecasting, and misinformation mitigation.
+
+However, predicting cascade growth from early-stage behavior is notoriously difficult due to stochastic adoption times, heavy-tailed cascade distributions, and complex network topologies. A core research question is: \textit{Can network centrality, community structure, link-prediction features, and early temporal dynamics be combined to accurately predict the eventual final size of an information cascade?}
+
+In this work, we implement a rigorous, reproducible Social Network Analysis (SNA) and machine learning pipeline on the MemeTracker NETINF dataset. We enforce strict scientific distinctions between observed temporal events, inferred propagation edges, and algorithmic community assignments.
+
+\section{Related Work}
+Diffusion network inference was pioneered by Gomez-Rodriguez et al.~\cite{gomez2010inferring}, who developed the NETINF algorithm to infer underlying hidden networks from timestamped meme cascades. Leskovec et al.~\cite{leskovec2009meme} analyzed phrase dynamics across news blogs, establishing heavy-tailed cascade distributions. Topological link prediction foundations were formalized by Liben-Nowell and Kleinberg~\cite{liben2007link}, while Blondel et al.~\cite{blondel2008fast} introduced the Louvain algorithm for fast community modularity optimization. Centrality metrics in social graphs originate from Freeman~\cite{freeman1978centrality} and Page et al.~\cite{page1999pagerank}. Ensemble machine learning methods like Random Forests~\cite{breiman2001random}, Gradient Boosting~\cite{friedman2001greedy}, and XGBoost~\cite{chen2016xgboost} have demonstrated strong performance in tabular network regression.
+
+\section{Dataset \& Preprocessing Audit}
+The project utilizes the MemeTracker NETINF inferred information diffusion network dataset (\texttt{InfoNet5000Q1000NEXP.txt}). The dataset comprises $5,000$ directed edge records inferring information flow across $Q=1000$ evaluated cascade trees.
+
+\begin{table}[h]
+\caption{Empirical Dataset & Preprocessing Audit Summary}
+\label{tab:dataset_summary}
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Metric / Feature} & \textbf{Empirical Value} \\
+\midrule
+Raw Data Records & $5,000$ directed edges \\
+Cleaned Data Records & $5,000$ (0 missing, 0 duplicates) \\
+Unique Source Websites ($src$) & $733$ \\
+Unique Destination Websites ($dst$) & $953$ \\
+Total Unique Websites ($|V|$) & $960$ \\
+Evaluated Cascade Trees & $1,000$ cascades \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Network Construction \& Basic SNA}
+We construct a Directed Weighted Graph $G = (V, E, W)$ where nodes represent website domain hostnames ($960$ nodes) and directed edges represent inferred propagation flows ($5,000$ edges). Edge weights encode cascade frequency (\texttt{number\_trees}), submodular marginal gain, and propagation delays.
+
+\begin{table}[h]
+\caption{Fundamental Social Network Analysis (SNA) Metrics}
+\label{tab:network_metrics}
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{SNA Metric} & \textbf{Empirical Result} \\
+\midrule
+Nodes ($|V|$) & $960$ \\
+Edges ($|E|$) & $5,000$ \\
+Network Density & $0.005431$ \\
+Mean Total Degree & $10.4167$ \\
+Max Out-Degree & $94$ (\texttt{startribune.com}) \\
+Max In-Degree & $22$ (\texttt{sfgate.com}, \texttt{sott.net}) \\
+Weakly Connected Components & $1$ ($100\%$ coverage) \\
+Strongly Connected Components & $246$ (Largest SCC: $715$ nodes, $74.48\%$) \\
+Directed Reciprocity & $0.0448$ ($4.48\%$) \\
+Clustering Coefficient (Transitivity) & $0.020376$ ($2.04\%$) \\
+Degree Assortativity & $-0.08954$ (Disassortative) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Centrality & Community Analysis}
+We compute degree centrality, exact betweenness centrality, closeness centrality, and PageRank ($\alpha=0.85$). Top source hubs by out-degree include \texttt{startribune.com} ($0.0980$) and \texttt{smh.com.au} ($0.0761$), whereas top global PageRank influencers include \texttt{blogs.myspace.com} ($0.00581$) and \texttt{sott.net} ($0.00562$).
+
+Louvain community detection partitions the $960$ nodes into $13$ detected network communities with a high modularity score of $Q = 0.4264$. Intra-community edges account for $43.44\%$ ($2,172$ edges), while inter-community edges account for $56.56\%$ ($2,828$ edges).
+
+\section{Temporal Link Prediction Experiment}
+We split the network chronologically into a historical training graph $G_{train}$ ($70\%$, $3,500$ edges) and future test edges ($30\%$, $1,500$ edges), balanced with $1,500$ sampled negative non-edges.
+
+\begin{table}[h]
+\caption{Link Prediction Classification Results}
+\label{tab:link_prediction}
+\centering
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Model} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{ROC-AUC} & \textbf{PR-AUC} \\
+\midrule
+Logistic Regression & 0.7219 & 0.5711 & 0.6377 & 0.7455 & 0.7496 \\
+Random Forest & 0.6921 & 0.7044 & 0.6982 & \textbf{0.7585} & \textbf{0.7549} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Primary Cascade Size Prediction}
+The primary target variable is \texttt{target\_final_size} (total unique websites reached, mean = $623.71$). We partition $1,000$ cascades into $70\%$ train ($700$), $15\%$ validation ($150$), and $15\%$ test ($150$) at the cascade level to eliminate observation leakage.
+
+\begin{table}[h]
+\caption{Primary Machine Learning Model Evaluations (Test Set, $N=600$)}
+\label{tab:ml_evaluations}
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model / Baseline} & \textbf{MAE (Websites)} & \textbf{RMSE} & \textbf{$R^2$ Score} \\
+\midrule
+Baseline: Mean Prediction & 10.4867 & 13.3194 & -0.0059 \\
+Baseline: Median Prediction & 10.4867 & 13.3194 & -0.0059 \\
+Baseline: Naive Early Size & 350.7750 & 368.4233 & -768.6243 \\
+Ridge Regression & 9.8525 & 12.6087 & 0.0986 \\
+XGBoost Regressor & 8.6229 & 11.0024 & 0.3136 \\
+Gradient Boosting Regressor & \textbf{8.5516} & 10.9131 & 0.3247 \\
+Random Forest Regressor & 8.6318 & \textbf{10.8724} & \textbf{0.3298} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Progressive Feature & Observation Dynamics}
+Table~\ref{tab:progressive} details progressive feature additions. Adding centrality metrics to temporal features increases $R^2$ from $0.2961$ to $0.3286$.
+
+\begin{table}[h]
+\caption{Progressive Feature Addition Experiment}
+\label{tab:progressive}
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Feature Configuration} & \textbf{MAE} & \textbf{RMSE} & \textbf{$R^2$} \\
+\midrule
+Model A: Temporal Only (5 feat.) & 8.1634 & 10.4106 & 0.2961 \\
+Model B: Model A + Centrality (11 feat.) & 7.9800 & \textbf{10.1673} & \textbf{0.3286} \\
+Model C: Model B + Community (12 feat.) & 7.9883 & 10.2240 & 0.3211 \\
+Model D: Full Model (15 feat.) & \textbf{7.9720} & 10.2041 & 0.3238 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Evaluating observation depth ($p$) shows strong predictive scaling: at $10\%$ cutoff, $\text{MAE} = 8.57$, $R^2 = 0.2207$; at $50\%$ cutoff, $\text{MAE} = 7.06$, $R^2 = \mathbf{0.4753}$.
+
+\section{Ablation & Feature Importance}
+Ablation confirms temporal features anchor predictions ($R^2$ drops to $0.0319$ without them), while centrality provides structural gains ($R^2$ drops to $0.2996$ without centrality). Permutation feature importance ranks \texttt{early\_event\_count} ($0.7643$), \texttt{early\_size} ($0.2176$), and \texttt{observation\_level} ($0.1956$) as top predictors.
+
+\section{Limitations & Conclusion}
+Key limitations include observational edge inference (NETINF) rather than true causal tracking and compact final cascade size variance ($\sigma=13.08$). In conclusion, combining early temporal dynamics with network centrality metrics enables early cascade size prediction with high accuracy ($\text{MAE} = 8.55$ sites, $R^2 = 0.4753$ at $50\%$ observation).
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

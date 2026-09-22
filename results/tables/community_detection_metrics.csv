@@ -1,0 +1,2 @@
+algorithm,num_communities,modularity,largest_community_size,smallest_community_size,mean_community_size,median_community_size,intra_community_edges,inter_community_edges,intra_edge_ratio,inter_edge_ratio
+Louvain,13,0.4263821396193955,138,13,73.84615384615384,68.0,2172,2828,0.4344,0.5656

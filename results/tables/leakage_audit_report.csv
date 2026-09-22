@@ -1,0 +1,13 @@
+feature_name,correlation_with_target,audit_status,temporal_scope
+observation_level,4.7513775937636515e-18,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)
+early_event_count,0.0333728517687394,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)
+early_size,0.042402507058459424,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)
+early_comm_count,0.009037605465015287,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)
+early_duration,-0.008234554751626433,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)
+early_growth_rate,0.06302955288659508,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)
+early_max_out_degree,-0.025676704585405365,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)
+early_mean_out_degree,-0.08400132105499618,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)
+early_max_betweenness,0.011606142957855163,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)
+early_mean_betweenness,-0.07922664323538446,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)
+early_max_pagerank,-0.001998410067044837,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)
+early_mean_pagerank,-0.10919146526750186,PASS (CLEAN TEMPORAL FEATURE),Early Window Only (<= p)

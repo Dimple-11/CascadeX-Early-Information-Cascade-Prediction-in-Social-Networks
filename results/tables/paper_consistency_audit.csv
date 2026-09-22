@@ -1,0 +1,11 @@
+claim,paper_value,source_file,source_value,match,status
+Total Unique Websites (|V|),960,data/processed/network_edges.csv,960,True,PASS (CONSISTENT)
+Total Inferred Edges (|E|),"5,000",data/processed/network_edges.csv,"5,000",True,PASS (CONSISTENT)
+Extracted Cascades (N),"1,000",data/processed/cascade_dataset.csv,"1,000",True,PASS (CONSISTENT)
+Detected Communities,13,results/tables/community_detection_metrics.csv,13,True,PASS (CONSISTENT)
+Louvain Modularity (Q),0.4264,results/tables/community_detection_metrics.csv,0.4264,True,PASS (CONSISTENT)
+Random Forest Link ROC-AUC,0.7585,results/link_prediction/link_prediction_metrics.csv,0.7585,True,PASS (CONSISTENT)
+Random Forest Link PR-AUC,0.7549,results/link_prediction/link_prediction_metrics.csv,0.7549,True,PASS (CONSISTENT)
+Primary Model MAE (GBR),8.5516,results/experiments/primary_model_evaluations.csv,8.5516,True,PASS (CONSISTENT)
+Primary Model R2 (RF),0.3298,results/experiments/primary_model_evaluations.csv,0.3298,True,PASS (CONSISTENT)
+50% Observation R2,0.4753,results/experiments/early_observation_experiment.csv,0.4753,True,PASS (CONSISTENT)
